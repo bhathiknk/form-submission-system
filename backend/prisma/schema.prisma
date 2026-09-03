@@ -1,0 +1,81 @@
+// Prisma schema for the Evotec Full-Stack Technical Assignment
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// Single users table for both customers and admins, distinguished by role.
+// This keeps auth logic unified while still allowing role-based endpoints.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  role         Role     @default(CUSTOMER)
+  isSeedAdmin  Boolean  @default(false) // marks the initial seeded super admin
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Refresh tokens issued to this user (for logout / rotation / revocation)
+  refreshTokens RefreshToken[]
+
+  // Submissions this user created (only applicable to CUSTOMER role)
+  submissionsCreated  Submission[] @relation("SubmissionCreatedBy")
+  // Submissions this user last modified (only applicable to ADMIN role)
+  submissionsModified Submission[] @relation("SubmissionModifiedBy")
+
+  @@map("users")
+}
+
+// Refresh tokens are stored (hashed) so they can be revoked/rotated server-side.
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Submission {
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String   @unique
+  gender        Gender
+  mobileNumber  String
+  address       String
+  feedback      String?
+
+  userCreatedId String
+  userCreated   User     @relation("SubmissionCreatedBy", fields: [userCreatedId], references: [id])
+  dateCreated   DateTime @default(now())
+
+  userModifiedId String?
+  userModified   User?    @relation("SubmissionModifiedBy", fields: [userModifiedId], references: [id])
+  dateModified   DateTime @updatedAt
+
+  @@index([gender])
+  @@index([firstName, lastName])
+  @@map("submissions")
+}
