@@ -15,4 +15,13 @@ const registerValidator = [
     .withMessage('Passwords do not match'),
 ];
 
-module.exports = { registerValidator };
+const loginValidator = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Email must be a valid email address')
+    .normalizeEmail(),
+  body('password').notEmpty().withMessage('Password is required'),
+];
+
+module.exports = { registerValidator, loginValidator };
