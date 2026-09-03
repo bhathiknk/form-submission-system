@@ -81,4 +81,7 @@ async function loginWithRole(req, res, requiredRole) {
 // POST /api/auth/customer/login
 const customerLogin = asyncHandler((req, res) => loginWithRole(req, res, 'CUSTOMER'));
 
-module.exports = { register, customerLogin };
+// POST /api/auth/admin/login
+const adminLogin = asyncHandler((req, res) => loginWithRole(req, res, 'ADMIN'));
+
+module.exports = { register, customerLogin, adminLogin };
