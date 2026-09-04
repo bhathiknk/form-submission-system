@@ -1,92 +1,103 @@
-import Link from 'next/link';
+import NextLink from 'next/link';
+import { Box, Container, Typography, Button, Stack, Paper, Grid } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
+import BoltOutlinedIcon from '@mui/icons-material/BoltOutlined';
 import Navbar from '../components/Navbar';
+import { palette } from '../theme/palette';
+
+const STEPS = [
+  'Register for a customer account with your email.',
+  'Sign in and complete the application form.',
+  'An admin reviews, updates, or follows up on your submission.',
+];
+
+const FEATURES = [
+  { icon: LockOutlinedIcon, title: 'Secure authentication', body: 'JWT-based sessions keep customer and admin accounts protected.' },
+  { icon: ExploreOutlinedIcon, title: 'Role-based access', body: 'Customers and admins each get a dedicated, guarded experience.' },
+  { icon: BoltOutlinedIcon, title: 'Fast review', body: 'Filter, search, and update submissions from a single dashboard.' },
+];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Navbar />
 
-      <main className="relative mx-auto max-w-6xl overflow-hidden px-6">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-indigo-200/40 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-violet-200/30 blur-3xl"
-        />
-
-        <section className="relative grid gap-12 py-20 md:grid-cols-[1.2fr_1fr] md:items-center">
-          <div>
-            <p className="mb-4 inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-700">
-              Client Intake Platform
-            </p>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 md:text-5xl">
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
+        <Grid container spacing={6} alignItems="center">
+          <Grid item xs={12} md={7}>
+            <Typography
+              variant="overline"
+              sx={{ color: palette.brassDark, fontWeight: 700, letterSpacing: '0.06em' }}
+            >
+              Client intake platform
+            </Typography>
+            <Typography variant="h1" sx={{ fontSize: { xs: '2.25rem', md: '3rem' }, lineHeight: 1.15, mt: 1 }}>
               A straightforward way to collect and manage client submissions
-            </h1>
-            <p className="mt-5 max-w-prose text-slate-600">
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 3, maxWidth: 62 + 'ch' }}>
               Customers register, sign in, and submit their details through a guided form.
-              Admins review everything in one place filter by gender, search by name,
+              Admins review everything in one place, filter by gender, search by name,
               and keep every record up to date.
-            </p>
+            </Typography>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/register"
-                className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition hover:bg-indigo-700"
-              >
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 5 }}>
+              <Button component={NextLink} href="/register" variant="contained" color="primary" size="large">
                 Create a customer account
-              </Link>
-              <Link
-                href="/login"
-                className="rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-white"
-              >
+              </Button>
+              <Button component={NextLink} href="/login" variant="outlined" size="large" sx={{ borderColor: 'rgba(22,26,32,0.25)', color: 'text.primary' }}>
                 Sign in
-              </Link>
-            </div>
-          </div>
+              </Button>
+            </Stack>
+          </Grid>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-lg shadow-slate-900/5">
-            <h2 className="text-lg font-semibold text-slate-900">How it works</h2>
-            <ol className="mt-4 space-y-4 text-sm text-slate-600">
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">1</span>
-                Register for a customer account with your email.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">2</span>
-                Sign in and complete the application form.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">3</span>
-                An admin reviews, updates, or follows up on your submission.
-              </li>
-            </ol>
-          </div>
-        </section>
+          <Grid item xs={12} md={5}>
+            <Paper variant="outlined" sx={{ p: 4, borderColor: 'rgba(22,26,32,0.1)' }}>
+              <Typography variant="h6">How it works</Typography>
+              <Stack spacing={2.5} sx={{ mt: 3 }}>
+                {STEPS.map((step, i) => (
+                  <Stack key={step} direction="row" spacing={2}>
+                    <Box
+                      sx={{
+                        flexShrink: 0,
+                        width: 26,
+                        height: 26,
+                        borderRadius: '50%',
+                        bgcolor: palette.brass,
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 13,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {i + 1}
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">{step}</Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Paper>
+          </Grid>
+        </Grid>
 
-        <section className="relative grid gap-6 pb-20 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">🔐</div>
-            <h3 className="mt-4 text-sm font-semibold text-slate-900">Secure authentication</h3>
-            <p className="mt-1.5 text-sm text-slate-500">JWT-based sessions keep customer and admin accounts protected.</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">🧭</div>
-            <h3 className="mt-4 text-sm font-semibold text-slate-900">Role-based access</h3>
-            <p className="mt-1.5 text-sm text-slate-500">Customers and admins each get a dedicated, guarded experience.</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">⚡</div>
-            <h3 className="mt-4 text-sm font-semibold text-slate-900">Fast review</h3>
-            <p className="mt-1.5 text-sm text-slate-500">Filter, search, and update submissions from a single dashboard.</p>
-          </div>
-        </section>
-      </main>
+        <Grid container spacing={3} sx={{ mt: { xs: 4, md: 6 } }}>
+          {FEATURES.map(({ icon: Icon, title, body }) => (
+            <Grid item xs={12} sm={4} key={title}>
+              <Paper variant="outlined" sx={{ p: 3, height: '100%', borderColor: 'rgba(22,26,32,0.1)' }}>
+                <Icon sx={{ color: palette.brass, fontSize: 28 }} />
+                <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 700 }}>{title}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{body}</Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
-      <footer className="border-t border-slate-200 py-8 text-center text-xs text-slate-400">
-        Evotec Records
-      </footer>
-    </div>
+      <Box component="footer" sx={{ borderTop: '1px solid rgba(22,26,32,0.08)', py: 4, textAlign: 'center' }}>
+        <Typography variant="caption" color="text.secondary">Evotec Records</Typography>
+      </Box>
+    </Box>
   );
 }

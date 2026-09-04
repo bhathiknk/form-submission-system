@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import {
+  Box, Container, Paper, Typography, TextField, MenuItem, Button, Alert, Grid,
+} from '@mui/material';
 import Navbar from '../../components/Navbar';
-import FormField from '../../components/FormField';
-import Button from '../../components/Button';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { createSubmission } from '../../lib/submissions';
 
@@ -12,14 +13,14 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MOBILE_REGEX = /^(\+?\d{1,3}[-\s]?)?\(?0?\d{2,4}\)?[-\s]?\d{3,4}[-\s]?\d{3,4}$/;
 
 const EMPTY_FORM = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  gender: '',
-  mobileNumber: '',
-  address: '',
-  feedback: '',
+  firstName: '', lastName: '', email: '', gender: '', mobileNumber: '', address: '', feedback: '',
 };
+
+const GENDERS = [
+  { value: 'MALE', label: 'Male' },
+  { value: 'FEMALE', label: 'Female' },
+  { value: 'OTHER', label: 'Other' },
+];
 
 export default function ApplicationPage() {
   const { user, loading } = useRequireAuth('CUSTOMER', '/login');
@@ -75,58 +76,93 @@ export default function ApplicationPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
         <Navbar />
-        <p className="p-6 text-sm text-slate-400">Loading...</p>
-      </div>
+        <Typography variant="body2" color="text.secondary" sx={{ p: 4 }}>Loading…</Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Navbar />
-      <main className="mx-auto max-w-2xl px-6 py-16">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Application form</h1>
-        <p className="mt-1.5 text-sm text-slate-500">Fill in your details below. Fields marked * are required.</p>
+      <Container maxWidth="md" sx={{ py: { xs: 6, md: 8 } }}>
+        <Typography variant="h4">Application form</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+          Fill in your details below. Fields marked * are required.
+        </Typography>
 
         {submitted && (
-          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <Alert severity="success" sx={{ mt: 3 }}>
             Your application was submitted. An admin will review it shortly. You can submit another one below.
-          </div>
+          </Alert>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-8 grid gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2 sm:p-8">
-          <FormField label="First name" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} required />
-          <FormField label="Last name" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} required />
+        <Paper
+          elevation={0}
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ mt: 3, p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(22,26,32,0.08)' }}
+        >
+          <Grid container spacing={2.5}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="First name" name="firstName" value={form.firstName} onChange={handleChange}
+                error={Boolean(errors.firstName)} helperText={errors.firstName} required fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Last name" name="lastName" value={form.lastName} onChange={handleChange}
+                error={Boolean(errors.lastName)} helperText={errors.lastName} required fullWidth
+              />
+            </Grid>
 
-          <div className="sm:col-span-2">
-            <FormField label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} required placeholder="you@example.com" />
-          </div>
+            <Grid item xs={12}>
+              <TextField
+                label="Email" name="email" type="email" value={form.email} onChange={handleChange}
+                error={Boolean(errors.email)} helperText={errors.email} placeholder="you@example.com" required fullWidth
+              />
+            </Grid>
 
-          <FormField label="Gender" name="gender" as="select" value={form.gender} onChange={handleChange} error={errors.gender} required>
-            <option value="">Select...</option>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-            <option value="OTHER">Other</option>
-          </FormField>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                select label="Gender" name="gender" value={form.gender} onChange={handleChange}
+                error={Boolean(errors.gender)} helperText={errors.gender} required fullWidth
+              >
+                <MenuItem value="" disabled>Select…</MenuItem>
+                {GENDERS.map((g) => <MenuItem key={g.value} value={g.value}>{g.label}</MenuItem>)}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Mobile number" name="mobileNumber" value={form.mobileNumber} onChange={handleChange}
+                error={Boolean(errors.mobileNumber)} helperText={errors.mobileNumber} placeholder="0917 123 4567" required fullWidth
+              />
+            </Grid>
 
-          <FormField label="Mobile number" name="mobileNumber" value={form.mobileNumber} onChange={handleChange} error={errors.mobileNumber} required placeholder="0917 123 4567" />
+            <Grid item xs={12}>
+              <TextField
+                label="Address" name="address" value={form.address} onChange={handleChange}
+                error={Boolean(errors.address)} helperText={errors.address} required fullWidth
+              />
+            </Grid>
 
-          <div className="sm:col-span-2">
-            <FormField label="Address" name="address" value={form.address} onChange={handleChange} error={errors.address} required />
-          </div>
+            <Grid item xs={12}>
+              <TextField
+                label="Feedback (optional)" name="feedback" value={form.feedback} onChange={handleChange}
+                multiline rows={3} fullWidth
+              />
+            </Grid>
 
-          <div className="sm:col-span-2">
-            <FormField label="Feedback (optional)" name="feedback" as="textarea" value={form.feedback} onChange={handleChange} error={errors.feedback} />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Button type="submit" variant="accent" loading={submitting} fullWidth>
-              Submit application
-            </Button>
-          </div>
-        </form>
-      </main>
-    </div>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" size="large" disabled={submitting} fullWidth>
+                {submitting ? 'Submitting…' : 'Submit application'}
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Container>
+    </Box>
   );
 }

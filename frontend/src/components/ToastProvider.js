@@ -1,6 +1,7 @@
 'use client';
 
 import { Toaster } from 'react-hot-toast';
+import { palette } from '../theme/palette';
 
 // centralizes toast styling so it matches the rest of the UI
 export default function ToastProvider() {
@@ -9,13 +10,13 @@ export default function ToastProvider() {
       position="top-right"
       toastOptions={{
         style: {
-          background: '#0F172A',
-          color: '#F8FAFC',
+          background: palette.ink,
+          color: '#F7F5F1',
           fontSize: '14px',
-          borderRadius: '10px',
+          borderRadius: '8px',
         },
-        success: { iconTheme: { primary: '#10B981', secondary: '#F8FAFC' } },
-        error: { iconTheme: { primary: '#F43F5E', secondary: '#F8FAFC' } },
+        success: { iconTheme: { primary: palette.moss, secondary: '#F7F5F1' } },
+        error: { iconTheme: { primary: palette.rust, secondary: '#F7F5F1' } },
       }}
     />
   );

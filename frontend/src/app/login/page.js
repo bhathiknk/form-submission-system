@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 import Navbar from '../../components/Navbar';
-import AuthCard from '../../components/AuthCard';
-import FormField from '../../components/FormField';
-import Button from '../../components/Button';
+import AuthShell from '../../components/AuthShell';
 import { useAuth } from '../../context/AuthContext';
 
 export default function CustomerLoginPage() {
@@ -40,40 +39,44 @@ export default function CustomerLoginPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <Box>
       <Navbar />
-      <AuthCard active="customer" title="Welcome back" subtitle="Sign in to submit or manage your application.">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <FormField
+      <AuthShell active="customer" title="Welcome back" subtitle="Sign in to submit or manage your application.">
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <TextField
             label="Email"
             name="email"
             type="email"
             value={form.email}
             onChange={handleChange}
-            required
             placeholder="you@example.com"
+            required
+            fullWidth
           />
-          <FormField
+          <TextField
             label="Password"
             name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
             required
+            fullWidth
           />
 
-          {error && <p className="text-sm text-rose-600">{error}</p>}
+          {error && <Alert severity="error">{error}</Alert>}
 
-          <Button type="submit" variant="accent" loading={submitting} fullWidth>
-            Log in
+          <Button type="submit" variant="contained" color="primary" size="large" disabled={submitting} fullWidth>
+            {submitting ? 'Logging in…' : 'Log in'}
           </Button>
-        </form>
+        </Box>
 
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="font-medium text-indigo-600 hover:underline">Register</Link>
-        </p>
-      </AuthCard>
-    </div>
+          <Typography component={NextLink} href="/register" variant="body2" sx={{ fontWeight: 600, color: 'primary.dark', textDecoration: 'none' }}>
+            Register
+          </Typography>
+        </Typography>
+      </AuthShell>
+    </Box>
   );
 }

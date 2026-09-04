@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import FormField from './FormField';
-import Button from './Button';
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, Alert,
+} from '@mui/material';
 import apiClient from '../lib/apiClient';
 
 // lets a logged-in admin create another admin account
@@ -29,30 +30,49 @@ export default function CreateAdminModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-        <h2 className="text-lg font-bold tracking-tight text-slate-900">Create admin account</h2>
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ fontWeight: 700 }}>Create admin account</DialogTitle>
 
-        {!result ? (
-          <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
-            <FormField label="Admin email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="new-admin@evotec.software" />
-            {error && <p className="text-sm text-rose-600">{error}</p>}
-            <div className="flex gap-3">
-              <Button type="submit" variant="adminAccent" loading={creating}>Create</Button>
-              <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-            </div>
-          </form>
-        ) : (
-          <div className="mt-4">
-            <p className="text-sm text-slate-600">Share these credentials with the new admin. This password is shown only once.</p>
-            <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
-              <p><span className="text-slate-500">Email:</span> {result.user.email}</p>
-              <p><span className="text-slate-500">Temporary password:</span> <span className="font-mono">{result.temporaryPassword}</span></p>
-            </div>
-            <Button className="mt-4" variant="outline" onClick={onClose}>Done</Button>
-          </div>
-        )}
-      </div>
-    </div>
+      {!result ? (
+        <>
+          <DialogContent>
+            <Box component="form" id="create-admin-form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="Admin email" type="email" value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="new-admin@evotec.software" required fullWidth
+              />
+              {error && <Alert severity="error">{error}</Alert>}
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 3 }}>
+            <Button onClick={onClose} color="inherit">Cancel</Button>
+            <Button type="submit" form="create-admin-form" variant="contained" color="primary" disabled={creating}>
+              {creating ? 'Creating…' : 'Create'}
+            </Button>
+          </DialogActions>
+        </>
+      ) : (
+        <>
+          <DialogContent>
+            <Typography variant="body2" color="text.secondary">
+              Share these credentials with the new admin. This password is shown only once.
+            </Typography>
+            <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(22,26,32,0.04)', borderRadius: 1.5 }}>
+              <Typography variant="body2">
+                <Box component="span" sx={{ color: 'text.secondary' }}>Email:</Box> {result.user.email}
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 0.5 }}>
+                <Box component="span" sx={{ color: 'text.secondary' }}>Temporary password:</Box>{' '}
+                <Box component="span" sx={{ fontFamily: 'monospace' }}>{result.temporaryPassword}</Box>
+              </Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 3 }}>
+            <Button onClick={onClose} variant="outlined">Done</Button>
+          </DialogActions>
+        </>
+      )}
+    </Dialog>
   );
 }

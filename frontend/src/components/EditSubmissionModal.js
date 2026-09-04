@@ -2,9 +2,16 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import FormField from './FormField';
-import Button from './Button';
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Button, Grid,
+} from '@mui/material';
 import { updateSubmission } from '../lib/submissions';
+
+const GENDERS = [
+  { value: 'MALE', label: 'Male' },
+  { value: 'FEMALE', label: 'Female' },
+  { value: 'OTHER', label: 'Other' },
+];
 
 // popup form to edit an existing submission, used by the admin dashboard
 export default function EditSubmissionModal({ submission, onClose, onSaved }) {
@@ -47,40 +54,41 @@ export default function EditSubmissionModal({ submission, onClose, onSaved }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
-        <h2 className="text-xl font-bold tracking-tight text-slate-900">Edit submission</h2>
-
-        <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
-          <FormField label="First name" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} required />
-          <FormField label="Last name" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} required />
-
-          <div className="sm:col-span-2">
-            <FormField label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} required />
-          </div>
-
-          <FormField label="Gender" name="gender" as="select" value={form.gender} onChange={handleChange} error={errors.gender} required>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-            <option value="OTHER">Other</option>
-          </FormField>
-
-          <FormField label="Mobile number" name="mobileNumber" value={form.mobileNumber} onChange={handleChange} error={errors.mobileNumber} required />
-
-          <div className="sm:col-span-2">
-            <FormField label="Address" name="address" value={form.address} onChange={handleChange} error={errors.address} required />
-          </div>
-
-          <div className="sm:col-span-2">
-            <FormField label="Feedback" name="feedback" as="textarea" value={form.feedback} onChange={handleChange} error={errors.feedback} />
-          </div>
-
-          <div className="flex gap-3 sm:col-span-2">
-            <Button type="submit" variant="adminAccent" loading={saving}>Save changes</Button>
-            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ fontWeight: 700 }}>Edit submission</DialogTitle>
+      <DialogContent>
+        <Grid container spacing={2.5} component="form" id="edit-submission-form" onSubmit={handleSubmit} sx={{ mt: 0.5 }}>
+          <Grid item xs={12} sm={6}>
+            <TextField label="First name" name="firstName" value={form.firstName} onChange={handleChange} error={Boolean(errors.firstName)} helperText={errors.firstName} required fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Last name" name="lastName" value={form.lastName} onChange={handleChange} error={Boolean(errors.lastName)} helperText={errors.lastName} required fullWidth />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={Boolean(errors.email)} helperText={errors.email} required fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField select label="Gender" name="gender" value={form.gender} onChange={handleChange} error={Boolean(errors.gender)} helperText={errors.gender} required fullWidth>
+              {GENDERS.map((g) => <MenuItem key={g.value} value={g.value}>{g.label}</MenuItem>)}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Mobile number" name="mobileNumber" value={form.mobileNumber} onChange={handleChange} error={Boolean(errors.mobileNumber)} helperText={errors.mobileNumber} required fullWidth />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Address" name="address" value={form.address} onChange={handleChange} error={Boolean(errors.address)} helperText={errors.address} required fullWidth />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Feedback" name="feedback" value={form.feedback} onChange={handleChange} multiline rows={3} fullWidth />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions sx={{ px: 3, pb: 3 }}>
+        <Button onClick={onClose} color="inherit">Cancel</Button>
+        <Button type="submit" form="edit-submission-form" variant="contained" color="primary" disabled={saving}>
+          {saving ? 'Saving…' : 'Save changes'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

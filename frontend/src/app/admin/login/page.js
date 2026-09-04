@@ -3,11 +3,20 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Box, TextField, Button, Alert } from '@mui/material';
 import Navbar from '../../../components/Navbar';
-import AuthCard from '../../../components/AuthCard';
-import FormField from '../../../components/FormField';
-import Button from '../../../components/Button';
+import AuthShell from '../../../components/AuthShell';
 import { useAuth } from '../../../context/AuthContext';
+import { palette } from '../../../theme/palette';
+
+// dark-field styling so inputs read correctly against the admin card's dark background
+const darkFieldSx = {
+  '& .MuiInputBase-input': { color: '#fff' },
+  '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.6)' },
+  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.4)' },
+  '& .Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: palette.brass },
+};
 
 export default function AdminLoginPage() {
   const { adminLogin } = useAuth();
@@ -39,37 +48,46 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <Box sx={{ minHeight: '100vh', bgcolor: palette.slate950 }}>
       <Navbar />
-      <AuthCard active="admin" title="Admin sign in" subtitle="Restricted access for administrators only.">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <FormField
+      <AuthShell active="admin" title="Admin sign in" subtitle="Restricted access for administrators only.">
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <TextField
             label="Email"
             name="email"
             type="email"
             value={form.email}
             onChange={handleChange}
-            required
             placeholder="admin@evotec.software"
-            variant="dark"
+            required
+            fullWidth
+            sx={darkFieldSx}
           />
-          <FormField
+          <TextField
             label="Password"
             name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
             required
-            variant="dark"
+            fullWidth
+            sx={darkFieldSx}
           />
 
-          {error && <p className="text-sm text-rose-400">{error}</p>}
+          {error && <Alert severity="error" variant="outlined">{error}</Alert>}
 
-          <Button type="submit" variant="adminAccent" loading={submitting} fullWidth>
-            Log in as admin
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            disabled={submitting}
+            fullWidth
+            sx={{ bgcolor: palette.brass, color: palette.ink, '&:hover': { bgcolor: palette.brassDark } }}
+          >
+            {submitting ? 'Logging in…' : 'Log in as admin'}
           </Button>
-        </form>
-      </AuthCard>
-    </div>
+        </Box>
+      </AuthShell>
+    </Box>
   );
 }

@@ -1,10 +1,13 @@
 'use client';
 
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
+import { AppBar, Toolbar, Box, Typography, Button, Stack } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
-import Button from './Button';
+import { palette } from '../theme/palette';
 
+// Top bar shared by every page. Switches to a dark "ledger" look on admin
+// pages so the two roles feel like distinct areas of the same product.
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -16,58 +19,69 @@ export default function Navbar() {
   }
 
   return (
-    <header
-      className={`sticky top-0 z-40 border-b backdrop-blur ${
-        isAdmin ? 'border-white/10 bg-slate-900/95' : 'border-slate-200 bg-white/90'
-      }`}
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{
+        bgcolor: isAdmin ? palette.slate950 : 'background.paper',
+        color: isAdmin ? '#fff' : 'text.primary',
+        borderBottom: '1px solid',
+        borderColor: isAdmin ? 'rgba(255,255,255,0.08)' : 'rgba(22,26,32,0.08)',
+      }}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link
+      <Toolbar sx={{ maxWidth: 1180, width: '100%', mx: 'auto', px: { xs: 2, sm: 3 } }}>
+        <Typography
+          component={NextLink}
           href="/"
-          className={`text-lg font-bold tracking-tight ${isAdmin ? 'text-white' : 'text-slate-900'}`}
+          variant="h6"
+          sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit', fontFamily: 'var(--font-serif)' }}
         >
-          Evotec<span className={isAdmin ? 'text-amber-400' : 'text-indigo-600'}>Records</span>
-        </Link>
+          Evotec <Box component="span" sx={{ color: palette.brass }}>Records</Box>
+        </Typography>
 
-        <nav className="flex items-center gap-3 text-sm">
+        <Stack direction="row" spacing={1} alignItems="center">
           {!user && (
             <>
-              <Link
-                href="/login"
-                className="px-3 py-2 font-medium text-slate-600 transition hover:text-slate-900"
-              >
+              <Button component={NextLink} href="/login" color="inherit" sx={{ color: 'text.secondary' }}>
                 Log in
-              </Link>
-              <Link
-                href="/register"
-                className="rounded-full bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm shadow-indigo-600/20 transition hover:bg-indigo-700"
-              >
+              </Button>
+              <Button component={NextLink} href="/register" variant="contained" color="primary">
                 Sign up
-              </Link>
+              </Button>
             </>
           )}
 
           {user && user.role === 'CUSTOMER' && (
             <>
-              <Link href="/application" className="text-slate-600 transition hover:text-slate-900">
+              <Button component={NextLink} href="/application" color="inherit" sx={{ color: 'text.secondary' }}>
                 Application
-              </Link>
-              <span className="hidden text-slate-400 sm:inline">{user.email}</span>
-              <Button variant="outline" onClick={handleLogout}>Log out</Button>
+              </Button>
+              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, color: 'text.secondary', mx: 1 }}>
+                {user.email}
+              </Typography>
+              <Button variant="outlined" color="primary" onClick={handleLogout}>Log out</Button>
             </>
           )}
 
           {user && isAdmin && (
             <>
-              <Link href="/admin/dashboard" className="text-slate-300 transition hover:text-white">
+              <Button component={NextLink} href="/admin/dashboard" sx={{ color: 'rgba(255,255,255,0.8)' }}>
                 Dashboard
-              </Link>
-              <span className="hidden text-slate-500 sm:inline">{user.email}</span>
-              <Button variant="adminOutline" onClick={handleLogout}>Log out</Button>
+              </Button>
+              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, color: 'rgba(255,255,255,0.5)', mx: 1 }}>
+                {user.email}
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={handleLogout}
+                sx={{ color: palette.brass, borderColor: 'rgba(184,134,63,0.5)', '&:hover': { borderColor: palette.brass, bgcolor: 'rgba(184,134,63,0.08)' } }}
+              >
+                Log out
+              </Button>
             </>
           )}
-        </nav>
-      </div>
-    </header>
+        </Stack>
+      </Toolbar>
+    </AppBar>
   );
 }

@@ -2,20 +2,27 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
+import {
+  Box, Container, Typography, Button, TextField, MenuItem, Table, TableHead, TableBody,
+  TableRow, TableCell, TableContainer, Paper, Chip, IconButton, Stack, Tooltip, Pagination,
+} from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import Navbar from '../../../components/Navbar';
-import Button from '../../../components/Button';
 import EditSubmissionModal from '../../../components/EditSubmissionModal';
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal';
 import CreateAdminModal from '../../../components/CreateAdminModal';
 import { useRequireAuth } from '../../../hooks/useRequireAuth';
 import { getSubmissions, deleteSubmission } from '../../../lib/submissions';
+import { palette } from '../../../theme/palette';
 
 const GENDER_OPTIONS = ['MALE', 'FEMALE', 'OTHER'];
 
-const GENDER_BADGE = {
-  MALE: 'bg-sky-400/10 text-sky-300',
-  FEMALE: 'bg-pink-400/10 text-pink-300',
-  OTHER: 'bg-amber-400/10 text-amber-300',
+const GENDER_COLOR = {
+  MALE: { bg: 'rgba(62,92,74,0.12)', text: palette.moss },
+  FEMALE: { bg: 'rgba(168,68,46,0.1)', text: palette.rust },
+  OTHER: { bg: 'rgba(184,134,63,0.14)', text: palette.brassDark },
 };
 
 export default function AdminDashboardPage() {
@@ -74,97 +81,168 @@ export default function AdminDashboardPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-slate-900">
+      <Box sx={{ minHeight: '100vh', bgcolor: palette.slate950 }}>
         <Navbar />
-        <p className="p-6 text-sm text-slate-500">Loading...</p>
-      </div>
+        <Typography variant="body2" sx={{ p: 4, color: 'rgba(255,255,255,0.5)' }}>Loading…</Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <Box sx={{ minHeight: '100vh', bgcolor: palette.slate950 }}>
       <Navbar />
-      <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">Submissions</h1>
-            <p className="mt-1 text-sm text-slate-400">{pagination.total} total record{pagination.total === 1 ? '' : 's'}</p>
-          </div>
-          <Button variant="adminAccent" onClick={() => setShowCreateAdmin(true)}>+ New admin</Button>
-        </div>
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Stack direction="row" flexWrap="wrap" justifyContent="space-between" alignItems="center" gap={2}>
+          <Box>
+            <Typography variant="h4" sx={{ color: '#fff' }}>Submissions</Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', mt: 0.5 }}>
+              {pagination.total} total record{pagination.total === 1 ? '' : 's'}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            onClick={() => setShowCreateAdmin(true)}
+            sx={{ bgcolor: palette.brass, color: palette.ink, '&:hover': { bgcolor: palette.brassDark } }}
+          >
+            + New admin
+          </Button>
+        </Stack>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <input
+        <Stack direction="row" flexWrap="wrap" gap={1.5} sx={{ mt: 3 }}>
+          <TextField
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by first or last name..."
-            className="w-64 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/20"
+            placeholder="Search by first or last name…"
+            size="small"
+            sx={{
+              width: 280,
+              '& .MuiInputBase-input': { color: '#fff' },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.4)' },
+              '& .Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: palette.brass },
+            }}
           />
-          <select
+          <TextField
+            select
             value={gender}
-            onChange={(e) => { setGender(e.target.value); }}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-slate-100 focus:border-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-400/20"
+            onChange={(e) => setGender(e.target.value)}
+            size="small"
+            sx={{
+              width: 180,
+              '& .MuiInputBase-input': { color: '#fff' },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.4)' },
+              '& .Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: palette.brass },
+            }}
           >
-            <option value="">All genders</option>
+            <MenuItem value="">All genders</MenuItem>
             {GENDER_OPTIONS.map((g) => (
-              <option key={g} value={g}>{g.charAt(0) + g.slice(1).toLowerCase()}</option>
+              <MenuItem key={g} value={g}>{g.charAt(0) + g.slice(1).toLowerCase()}</MenuItem>
             ))}
-          </select>
+          </TextField>
           {gender && (
-            <Button variant="adminGhost" onClick={() => setGender('')}>Clear filter</Button>
+            <Button onClick={() => setGender('')} sx={{ color: 'rgba(255,255,255,0.6)' }}>
+              Clear filter
+            </Button>
           )}
-        </div>
+        </Stack>
 
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10 bg-slate-800/60">
-          <table className="w-full min-w-[800px] text-left text-sm">
-            <thead className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wide text-slate-400">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Gender</th>
-                <th className="px-4 py-3">Mobile</th>
-                <th className="px-4 py-3">Submitted</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableContainer
+          component={Paper}
+          sx={{ mt: 3, bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <Table sx={{ minWidth: 900 }}>
+            <TableHead>
+              <TableRow sx={{ '& th': { borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.04em' } }}>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Gender</TableCell>
+                <TableCell>Mobile</TableCell>
+                <TableCell>Submitted</TableCell>
+                <TableCell>Last modified</TableCell>
+                <TableCell align="right">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {fetching && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">Loading...</td></tr>
+                <TableRow>
+                  <TableCell colSpan={7} align="center" sx={{ py: 5, color: 'rgba(255,255,255,0.4)', borderColor: 'rgba(255,255,255,0.06)' }}>
+                    Loading…
+                  </TableCell>
+                </TableRow>
               )}
               {!fetching && submissions.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">No submissions found.</td></tr>
+                <TableRow>
+                  <TableCell colSpan={7} align="center" sx={{ py: 5, color: 'rgba(255,255,255,0.4)', borderColor: 'rgba(255,255,255,0.06)' }}>
+                    No submissions found.
+                  </TableCell>
+                </TableRow>
               )}
-              {!fetching && submissions.map((s) => (
-                <tr key={s.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.03]">
-                  <td className="px-4 py-3 font-medium text-white">{s.firstName} {s.lastName}</td>
-                  <td className="px-4 py-3 text-slate-300">{s.email}</td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${GENDER_BADGE[s.gender] || 'bg-slate-400/10 text-slate-300'}`}>
-                      {s.gender}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-slate-300">{s.mobileNumber}</td>
-                  <td className="px-4 py-3 text-slate-500">{new Date(s.dateCreated).toLocaleDateString()}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="adminGhost" onClick={() => setEditing(s)}>Edit</Button>
-                      <Button variant="ghost" className="text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" onClick={() => setDeleting(s)}>Delete</Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              {!fetching && submissions.map((s) => {
+                const color = GENDER_COLOR[s.gender] || { bg: 'rgba(255,255,255,0.08)', text: 'rgba(255,255,255,0.7)' };
+                // userModified is only set once an admin actually saves an edit —
+                // so an untouched row correctly shows nothing here, not a false "modified" date
+                const wasModified = Boolean(s.userModified);
+
+                return (
+                  <TableRow key={s.id} sx={{ '& td': { borderColor: 'rgba(255,255,255,0.06)' }, '&:hover': { bgcolor: 'rgba(255,255,255,0.02)' } }}>
+                    <TableCell sx={{ color: '#fff', fontWeight: 600 }}>{s.firstName} {s.lastName}</TableCell>
+                    <TableCell sx={{ color: 'rgba(255,255,255,0.75)' }}>{s.email}</TableCell>
+                    <TableCell>
+                      <Chip label={s.gender} size="small" sx={{ bgcolor: color.bg, color: color.text }} />
+                    </TableCell>
+                    <TableCell sx={{ color: 'rgba(255,255,255,0.75)' }}>{s.mobileNumber}</TableCell>
+                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                      {new Date(s.dateCreated).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                      {wasModified ? (
+                        <Tooltip title={`Edited by ${s.userModified.email}`}>
+                          <Stack direction="row" spacing={0.75} alignItems="center">
+                            <HistoryOutlinedIcon sx={{ fontSize: 15, color: palette.brass }} />
+                            <Box>
+                              <Typography variant="caption" component="div" sx={{ color: '#fff', lineHeight: 1.3 }}>
+                                {s.userModified.email}
+                              </Typography>
+                              <Typography variant="caption" component="div" sx={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.3 }}>
+                                {new Date(s.dateModified).toLocaleString()}
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Tooltip>
+                      ) : (
+                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.3)' }}>—</Typography>
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton size="small" onClick={() => setEditing(s)} sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                        <EditOutlinedIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" onClick={() => setDeleting(s)} sx={{ color: palette.rust }}>
+                        <DeleteOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         {pagination.totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-center gap-3 text-sm">
-            <Button variant="adminOutline" disabled={pagination.page <= 1} onClick={() => fetchData(pagination.page - 1)}>Previous</Button>
-            <span className="text-slate-400">Page {pagination.page} of {pagination.totalPages}</span>
-            <Button variant="adminOutline" disabled={pagination.page >= pagination.totalPages} onClick={() => fetchData(pagination.page + 1)}>Next</Button>
-          </div>
+          <Stack alignItems="center" sx={{ mt: 3 }}>
+            <Pagination
+              page={pagination.page}
+              count={pagination.totalPages}
+              onChange={(_, page) => fetchData(page)}
+              sx={{
+                '& .MuiPaginationItem-root': { color: 'rgba(255,255,255,0.6)' },
+                '& .Mui-selected': { bgcolor: `${palette.brass} !important`, color: palette.ink },
+              }}
+            />
+          </Stack>
         )}
-      </main>
+      </Container>
 
       {editing && (
         <EditSubmissionModal
@@ -184,6 +262,6 @@ export default function AdminDashboardPage() {
       )}
 
       {showCreateAdmin && <CreateAdminModal onClose={() => setShowCreateAdmin(false)} />}
-    </div>
+    </Box>
   );
 }

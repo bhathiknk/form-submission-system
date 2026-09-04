@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Box, Container, Paper, Typography, TextField, Button } from '@mui/material';
 import Navbar from '../../components/Navbar';
-import FormField from '../../components/FormField';
-import Button from '../../components/Button';
 import { useAuth } from '../../context/AuthContext';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,55 +62,66 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Navbar />
-      <main className="flex min-h-[calc(100vh-73px)] items-center justify-center bg-slate-50 px-4 py-12">
-        <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl ring-1 ring-slate-900/5">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Create your account</h1>
-          <p className="mt-1.5 text-sm text-slate-500">Register as a customer to submit your application.</p>
+      <Box sx={{ minHeight: 'calc(100vh - 64px)', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2, py: 8 }}>
+        <Container maxWidth="xs">
+          <Paper elevation={0} sx={{ p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(22,26,32,0.08)' }}>
+            <Typography variant="h5">Create your account</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+              Register as a customer to submit your application.
+            </Typography>
 
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
-            <FormField
-              label="Email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              error={errors.email}
-              required
-              placeholder="you@example.com"
-            />
-            <FormField
-              label="Password"
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
-              required
-              placeholder="At least 4 characters"
-            />
-            <FormField
-              label="Confirm password"
-              name="confirmPassword"
-              type="password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-              required
-            />
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+                placeholder="you@example.com"
+                required
+                fullWidth
+              />
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                error={Boolean(errors.password)}
+                helperText={errors.password || 'At least 4 characters'}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Confirm password"
+                name="confirmPassword"
+                type="password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                error={Boolean(errors.confirmPassword)}
+                helperText={errors.confirmPassword}
+                required
+                fullWidth
+              />
 
-            <Button type="submit" variant="accent" loading={submitting} fullWidth>
-              Create account
-            </Button>
-          </form>
+              <Button type="submit" variant="contained" color="primary" size="large" disabled={submitting} fullWidth>
+                {submitting ? 'Creating account…' : 'Create account'}
+              </Button>
+            </Box>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
-            Already have an account?{' '}
-            <Link href="/login" className="font-medium text-indigo-600 hover:underline">Log in</Link>
-          </p>
-        </div>
-      </main>
-    </div>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+              Already have an account?{' '}
+              <Typography component={NextLink} href="/login" variant="body2" sx={{ display: 'inline', fontWeight: 600, color: 'primary.dark', textDecoration: 'none' }}>
+                Log in
+              </Typography>
+            </Typography>
+          </Paper>
+        </Container>
+      </Box>
+    </Box>
   );
 }
