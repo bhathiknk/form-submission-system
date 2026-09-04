@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const prisma = require('../config/prisma');
-const { asyncHandler } = require('../utils/helpers');
+const { asyncHandler, generateRandomPassword } = require('../utils/helpers');
 const { signAccessToken, signRefreshToken, hashToken } = require('../utils/jwt');
 
 const SALT_ROUNDS = 12;
@@ -84,4 +84,30 @@ const customerLogin = asyncHandler((req, res) => loginWithRole(req, res, 'CUSTOM
 // POST /api/auth/admin/login
 const adminLogin = asyncHandler((req, res) => loginWithRole(req, res, 'ADMIN'));
 
-module.exports = { register, customerLogin, adminLogin };
+// POST /api/auth/admin/create - admin only, creates another admin with a random password
+const createAdmin = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) {
+    return res.status(409).json({ success: false, message: 'An account with this email already exists' });
+  }
+
+  const rawPassword = generateRandomPassword(12);
+  const hashedPassword = await bcrypt.hash(rawPassword, SALT_ROUNDS);
+
+  const admin = await prisma.user.create({
+    data: { email, password: hashedPassword, role: 'ADMIN' },
+  });
+
+  return res.status(201).json({
+    success: true,
+    message: 'Admin account created successfully',
+    data: {
+      user: sanitizeUser(admin),
+      temporaryPassword: rawPassword, // only returned here, once
+    },
+  });
+});
+
+module.exports = { register, customerLogin, adminLogin, createAdmin };
