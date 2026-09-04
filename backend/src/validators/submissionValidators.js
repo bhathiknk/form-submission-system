@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, param, query } = require('express-validator');
 
 const GENDER_VALUES = ['MALE', 'FEMALE', 'OTHER'];
 
@@ -24,4 +24,18 @@ const createSubmissionValidator = [
   body('feedback').optional({ checkFalsy: true }).trim(),
 ];
 
-module.exports = { createSubmissionValidator, GENDER_VALUES };
+const idParamValidator = [param('id').isUUID().withMessage('Invalid submission id')];
+
+const listSubmissionsValidator = [
+  query('gender').optional().isIn(GENDER_VALUES).withMessage(`Gender must be one of: ${GENDER_VALUES.join(', ')}`),
+  query('search').optional().trim(),
+  query('page').optional().isInt({ min: 1 }).withMessage('page must be a positive integer'),
+  query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('limit must be between 1 and 100'),
+];
+
+module.exports = {
+  createSubmissionValidator,
+  idParamValidator,
+  listSubmissionsValidator,
+  GENDER_VALUES,
+};
