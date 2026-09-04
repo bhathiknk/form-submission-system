@@ -121,6 +121,7 @@ Open a **new terminal** (keep the backend running) and:
 ```bash
 cd frontend
 npm install
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 ```
 
 ### 3.1 Configure environment variables
