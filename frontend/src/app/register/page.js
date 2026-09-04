@@ -65,50 +65,52 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="mx-auto flex max-w-md flex-col px-6 py-16">
-        <h1 className="font-serif text-2xl text-ink">Create your account</h1>
-        <p className="mt-2 text-sm text-ink/60">Register as a customer to submit your application.</p>
+      <main className="flex min-h-[calc(100vh-73px)] items-center justify-center bg-slate-50 px-4 py-12">
+        <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl ring-1 ring-slate-900/5">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Create your account</h1>
+          <p className="mt-1.5 text-sm text-slate-500">Register as a customer to submit your application.</p>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-          <FormField
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
-            required
-            placeholder="you@example.com"
-          />
-          <FormField
-            label="Password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            error={errors.password}
-            required
-            placeholder="At least 4 characters"
-          />
-          <FormField
-            label="Confirm password"
-            name="confirmPassword"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            error={errors.confirmPassword}
-            required
-          />
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
+            <FormField
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              error={errors.email}
+              required
+              placeholder="you@example.com"
+            />
+            <FormField
+              label="Password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+              required
+              placeholder="At least 4 characters"
+            />
+            <FormField
+              label="Confirm password"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              error={errors.confirmPassword}
+              required
+            />
 
-          <Button type="submit" variant="accent" loading={submitting} fullWidth>
-            Create account
-          </Button>
-        </form>
+            <Button type="submit" variant="accent" loading={submitting} fullWidth>
+              Create account
+            </Button>
+          </form>
 
-        <p className="mt-6 text-center text-sm text-ink/60">
-          Already have an account?{' '}
-          <Link href="/login" className="font-medium text-brassdark hover:underline">Log in</Link>
-        </p>
+          <p className="mt-6 text-center text-sm text-slate-500">
+            Already have an account?{' '}
+            <Link href="/login" className="font-medium text-indigo-600 hover:underline">Log in</Link>
+          </p>
+        </div>
       </main>
     </div>
   );

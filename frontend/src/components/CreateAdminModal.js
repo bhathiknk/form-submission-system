@@ -29,25 +29,25 @@ export default function CreateAdminModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4">
-      <div className="w-full max-w-sm rounded-lg bg-paper p-6">
-        <h2 className="font-serif text-lg text-ink">Create admin account</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+        <h2 className="text-lg font-bold tracking-tight text-slate-900">Create admin account</h2>
 
         {!result ? (
           <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
             <FormField label="Admin email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="new-admin@evotec.software" />
-            {error && <p className="text-sm text-rust">{error}</p>}
+            {error && <p className="text-sm text-rose-600">{error}</p>}
             <div className="flex gap-3">
-              <Button type="submit" variant="accent" loading={creating}>Create</Button>
+              <Button type="submit" variant="adminAccent" loading={creating}>Create</Button>
               <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
             </div>
           </form>
         ) : (
           <div className="mt-4">
-            <p className="text-sm text-ink/70">Share these credentials with the new admin. This password is shown only once.</p>
-            <div className="mt-3 rounded-md bg-ink/5 p-3 text-sm">
-              <p><span className="text-ink/50">Email:</span> {result.user.email}</p>
-              <p><span className="text-ink/50">Temporary password:</span> <span className="font-mono">{result.temporaryPassword}</span></p>
+            <p className="text-sm text-slate-600">Share these credentials with the new admin. This password is shown only once.</p>
+            <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
+              <p><span className="text-slate-500">Email:</span> {result.user.email}</p>
+              <p><span className="text-slate-500">Temporary password:</span> <span className="font-mono">{result.temporaryPassword}</span></p>
             </div>
             <Button className="mt-4" variant="outline" onClick={onClose}>Done</Button>
           </div>

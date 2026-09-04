@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Navbar from '../../../components/Navbar';
+import AuthCard from '../../../components/AuthCard';
 import FormField from '../../../components/FormField';
 import Button from '../../../components/Button';
 import { useAuth } from '../../../context/AuthContext';
@@ -38,13 +39,10 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ink">
+    <div className="min-h-screen bg-slate-900">
       <Navbar />
-      <main className="mx-auto flex max-w-md flex-col px-6 py-16">
-        <h1 className="font-serif text-2xl text-paper">Admin login</h1>
-        <p className="mt-2 text-sm text-paper/60">Restricted access for administrators only.</p>
-
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5 rounded-lg border border-paper/10 bg-ink p-6">
+      <AuthCard active="admin" title="Admin sign in" subtitle="Restricted access for administrators only.">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <FormField
             label="Email"
             name="email"
@@ -53,6 +51,7 @@ export default function AdminLoginPage() {
             onChange={handleChange}
             required
             placeholder="admin@evotec.software"
+            variant="dark"
           />
           <FormField
             label="Password"
@@ -61,15 +60,16 @@ export default function AdminLoginPage() {
             value={form.password}
             onChange={handleChange}
             required
+            variant="dark"
           />
 
-          {error && <p className="text-sm text-rust">{error}</p>}
+          {error && <p className="text-sm text-rose-400">{error}</p>}
 
-          <Button type="submit" variant="accent" loading={submitting} fullWidth>
+          <Button type="submit" variant="adminAccent" loading={submitting} fullWidth>
             Log in as admin
           </Button>
         </form>
-      </main>
+      </AuthCard>
     </div>
   );
 }

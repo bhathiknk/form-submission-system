@@ -47,9 +47,9 @@ export default function EditSubmissionModal({ submission, onClose, onSaved }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg bg-paper p-6">
-        <h2 className="font-serif text-xl text-ink">Edit submission</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
+        <h2 className="text-xl font-bold tracking-tight text-slate-900">Edit submission</h2>
 
         <form onSubmit={handleSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
           <FormField label="First name" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} required />
@@ -76,7 +76,7 @@ export default function EditSubmissionModal({ submission, onClose, onSaved }) {
           </div>
 
           <div className="flex gap-3 sm:col-span-2">
-            <Button type="submit" variant="accent" loading={saving}>Save changes</Button>
+            <Button type="submit" variant="adminAccent" loading={saving}>Save changes</Button>
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
           </div>
         </form>

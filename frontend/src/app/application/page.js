@@ -75,27 +75,27 @@ export default function ApplicationPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-slate-50">
         <Navbar />
-        <p className="p-6 text-sm text-ink/50">Loading...</p>
+        <p className="p-6 text-sm text-slate-400">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50">
       <Navbar />
       <main className="mx-auto max-w-2xl px-6 py-16">
-        <h1 className="font-serif text-2xl text-ink">Application form</h1>
-        <p className="mt-2 text-sm text-ink/60">Fill in your details below. Fields marked * are required.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Application form</h1>
+        <p className="mt-1.5 text-sm text-slate-500">Fill in your details below. Fields marked * are required.</p>
 
         {submitted && (
-          <div className="mt-6 rounded-md border border-moss/30 bg-moss/10 px-4 py-3 text-sm text-moss">
+          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             Your application was submitted. An admin will review it shortly. You can submit another one below.
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
+        <form onSubmit={handleSubmit} className="mt-8 grid gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2 sm:p-8">
           <FormField label="First name" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} required />
           <FormField label="Last name" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} required />
 

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Navbar from '../../components/Navbar';
+import AuthCard from '../../components/AuthCard';
 import FormField from '../../components/FormField';
 import Button from '../../components/Button';
 import { useAuth } from '../../context/AuthContext';
@@ -41,11 +42,8 @@ export default function CustomerLoginPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="mx-auto flex max-w-md flex-col px-6 py-16">
-        <h1 className="font-serif text-2xl text-ink">Customer login</h1>
-        <p className="mt-2 text-sm text-ink/60">Sign in to submit or manage your application.</p>
-
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+      <AuthCard active="customer" title="Welcome back" subtitle="Sign in to submit or manage your application.">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <FormField
             label="Email"
             name="email"
@@ -64,21 +62,18 @@ export default function CustomerLoginPage() {
             required
           />
 
-          {error && <p className="text-sm text-rust">{error}</p>}
+          {error && <p className="text-sm text-rose-600">{error}</p>}
 
           <Button type="submit" variant="accent" loading={submitting} fullWidth>
             Log in
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-ink/60">
+        <p className="mt-6 text-center text-sm text-slate-500">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="font-medium text-brassdark hover:underline">Register</Link>
+          <Link href="/register" className="font-medium text-indigo-600 hover:underline">Register</Link>
         </p>
-        <p className="mt-2 text-center text-xs text-ink/40">
-          Are you an admin? <Link href="/admin/login" className="hover:underline">Go to admin login</Link>
-        </p>
-      </main>
+      </AuthCard>
     </div>
   );
 }
