@@ -32,4 +32,8 @@ const createAdminValidator = [
     .normalizeEmail(),
 ];
 
-module.exports = { registerValidator, loginValidator, createAdminValidator };
+const refreshValidator = [
+  body('refreshToken').notEmpty().withMessage('Refresh token is required'),
+];
+
+module.exports = { registerValidator, loginValidator, createAdminValidator, refreshValidator };

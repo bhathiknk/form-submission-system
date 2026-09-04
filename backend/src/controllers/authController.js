@@ -1,7 +1,12 @@
 const bcrypt = require('bcrypt');
 const prisma = require('../config/prisma');
 const { asyncHandler, generateRandomPassword } = require('../utils/helpers');
-const { signAccessToken, signRefreshToken, hashToken } = require('../utils/jwt');
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+  hashToken,
+} = require('../utils/jwt');
 
 const SALT_ROUNDS = 12;
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // fallback, matches default expiry
@@ -110,4 +115,70 @@ const createAdmin = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { register, customerLogin, adminLogin, createAdmin };
+// POST /api/auth/refresh - issues a new access token, rotates the refresh token
+const refresh = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  let payload;
+  try {
+    payload = verifyRefreshToken(refreshToken);
+  } catch (err) {
+    return res.status(401).json({ success: false, message: 'Invalid or expired refresh token' });
+  }
+
+  if (payload.type !== 'refresh') {
+    return res.status(401).json({ success: false, message: 'Invalid token type' });
+  }
+
+  const tokenHash = hashToken(refreshToken);
+  const stored = await prisma.refreshToken.findUnique({ where: { tokenHash } });
+
+  if (!stored || stored.revoked || stored.expiresAt < new Date()) {
+    return res.status(401).json({ success: false, message: 'Refresh token is no longer valid' });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: payload.sub } });
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'User no longer exists' });
+  }
+
+  // rotate: revoke old token, issue a new pair
+  const newAccessToken = signAccessToken(user);
+  const newRefreshToken = signRefreshToken(user);
+
+  await prisma.$transaction([
+    prisma.refreshToken.update({ where: { id: stored.id }, data: { revoked: true } }),
+  ]);
+  await storeRefreshToken(user.id, newRefreshToken);
+
+  return res.status(200).json({
+    success: true,
+    data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
+  });
+});
+
+// POST /api/auth/logout - revokes the given refresh token
+const logout = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (refreshToken) {
+    const tokenHash = hashToken(refreshToken);
+    await prisma.refreshToken.updateMany({
+      where: { tokenHash },
+      data: { revoked: true },
+    });
+  }
+
+  return res.status(200).json({ success: true, message: 'Logged out successfully' });
+});
+
+// GET /api/auth/me - returns the logged in user's profile
+const me = asyncHandler(async (req, res) => {
+  const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+  return res.status(200).json({ success: true, data: { user: sanitizeUser(user) } });
+});
+
+module.exports = { register, customerLogin, adminLogin, createAdmin, refresh, logout, me };
