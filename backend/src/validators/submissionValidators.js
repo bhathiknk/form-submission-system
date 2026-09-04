@@ -24,6 +24,26 @@ const createSubmissionValidator = [
   body('feedback').optional({ checkFalsy: true }).trim(),
 ];
 
+const updateSubmissionValidator = [
+  param('id').isUUID().withMessage('Invalid submission id'),
+  body('firstName').optional().trim().notEmpty().withMessage('First name cannot be empty'),
+  body('lastName').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
+  body('email')
+    .optional()
+    .trim()
+    .isEmail().withMessage('Email must be a valid email address')
+    .normalizeEmail(),
+  body('gender')
+    .optional()
+    .isIn(GENDER_VALUES).withMessage(`Gender must be one of: ${GENDER_VALUES.join(', ')}`),
+  body('mobileNumber')
+    .optional()
+    .trim()
+    .matches(MOBILE_REGEX).withMessage('Mobile number format is invalid'),
+  body('address').optional().trim().notEmpty().withMessage('Address cannot be empty'),
+  body('feedback').optional({ checkFalsy: true }).trim(),
+];
+
 const idParamValidator = [param('id').isUUID().withMessage('Invalid submission id')];
 
 const listSubmissionsValidator = [
@@ -35,6 +55,7 @@ const listSubmissionsValidator = [
 
 module.exports = {
   createSubmissionValidator,
+  updateSubmissionValidator,
   idParamValidator,
   listSubmissionsValidator,
   GENDER_VALUES,

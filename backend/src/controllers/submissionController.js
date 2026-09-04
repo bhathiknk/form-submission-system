@@ -95,4 +95,63 @@ const getSubmissionById = asyncHandler(async (req, res) => {
   return res.status(200).json({ success: true, data: { submission } });
 });
 
-module.exports = { createSubmission, getAllSubmissions, getSubmissionById };
+// PUT /api/submissions/:id - admin only, updates any field, tracks who/when
+const updateSubmission = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const allowedFields = ['firstName', 'lastName', 'email', 'gender', 'mobileNumber', 'address', 'feedback'];
+
+  const existing = await prisma.submission.findUnique({ where: { id } });
+  if (!existing) {
+    return res.status(404).json({ success: false, message: 'Submission not found' });
+  }
+
+  const updateData = {};
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      updateData[field] = req.body[field];
+    }
+  });
+
+  if (updateData.email && updateData.email !== existing.email) {
+    const emailTaken = await prisma.submission.findUnique({ where: { email: updateData.email } });
+    if (emailTaken) {
+      return res.status(409).json({ success: false, message: 'A submission with this email already exists' });
+    }
+  }
+
+  const submission = await prisma.submission.update({
+    where: { id },
+    data: {
+      ...updateData,
+      userModifiedId: req.user.id,
+    },
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Submission updated successfully',
+    data: { submission },
+  });
+});
+
+// DELETE /api/submissions/:id - admin only
+const deleteSubmission = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const existing = await prisma.submission.findUnique({ where: { id } });
+  if (!existing) {
+    return res.status(404).json({ success: false, message: 'Submission not found' });
+  }
+
+  await prisma.submission.delete({ where: { id } });
+
+  return res.status(200).json({ success: true, message: 'Submission deleted successfully' });
+});
+
+module.exports = {
+  createSubmission,
+  getAllSubmissions,
+  getSubmissionById,
+  updateSubmission,
+  deleteSubmission,
+};

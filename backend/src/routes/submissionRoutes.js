@@ -2,7 +2,7 @@ const express = require('express');
 const submissionController = require('../controllers/submissionController');
 const { authenticate, authorize } = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const { createSubmissionValidator, idParamValidator, listSubmissionsValidator } = require('../validators/submissionValidators');
+const { createSubmissionValidator, updateSubmissionValidator, idParamValidator, listSubmissionsValidator } = require('../validators/submissionValidators');
 
 const router = express.Router();
 
@@ -33,6 +33,24 @@ router.get(
   idParamValidator,
   validate,
   submissionController.getSubmissionById
+);
+
+router.put(
+  '/:id',
+  authenticate,
+  authorize('ADMIN'),
+  updateSubmissionValidator,
+  validate,
+  submissionController.updateSubmission
+);
+
+router.delete(
+  '/:id',
+  authenticate,
+  authorize('ADMIN'),
+  idParamValidator,
+  validate,
+  submissionController.deleteSubmission
 );
 
 module.exports = router;
