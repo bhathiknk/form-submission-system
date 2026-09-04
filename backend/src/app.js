@@ -5,6 +5,7 @@ const morgan = require('morgan');
 
 const env = require('./config/env');
 const authRoutes = require('./routes/authRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/submissions', submissionRoutes);
 
 module.exports = app;
