@@ -11,12 +11,13 @@ export default function ToastProvider() {
       toastOptions={{
         style: {
           background: palette.ink,
-          color: '#F7F5F1',
+          color: '#F5F6FB',
           fontSize: '14px',
-          borderRadius: '8px',
+          borderRadius: '10px',
+          boxShadow: '0 12px 32px -8px rgba(20,22,31,0.45)',
         },
-        success: { iconTheme: { primary: palette.moss, secondary: '#F7F5F1' } },
-        error: { iconTheme: { primary: palette.rust, secondary: '#F7F5F1' } },
+        success: { iconTheme: { primary: palette.teal, secondary: '#F5F6FB' } },
+        error: { iconTheme: { primary: palette.coral, secondary: '#F5F6FB' } },
       }}
     />
   );

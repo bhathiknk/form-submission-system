@@ -23,10 +23,11 @@ export default function Navbar() {
       position="sticky"
       elevation={0}
       sx={{
-        bgcolor: isAdmin ? palette.slate950 : 'background.paper',
+        bgcolor: isAdmin ? 'rgba(11,12,20,0.85)' : 'rgba(255,255,255,0.85)',
+        backdropFilter: 'blur(10px)',
         color: isAdmin ? '#fff' : 'text.primary',
         borderBottom: '1px solid',
-        borderColor: isAdmin ? 'rgba(255,255,255,0.08)' : 'rgba(22,26,32,0.08)',
+        borderColor: isAdmin ? 'rgba(255,255,255,0.08)' : 'rgba(20,22,31,0.06)',
       }}
     >
       <Toolbar sx={{ maxWidth: 1180, width: '100%', mx: 'auto', px: { xs: 2, sm: 3 } }}>
@@ -34,9 +35,20 @@ export default function Navbar() {
           component={NextLink}
           href="/"
           variant="h6"
-          sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit', fontFamily: 'var(--font-serif)' }}
+          sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit', fontFamily: 'var(--font-serif)', letterSpacing: '-0.01em' }}
         >
-          Evotec <Box component="span" sx={{ color: palette.brass }}>Records</Box>
+          Evotec{' '}
+          <Box
+            component="span"
+            sx={{
+              background: `linear-gradient(90deg, ${palette.indigo}, ${palette.teal})`,
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
+          >
+            Records
+          </Box>
         </Typography>
 
         <Stack direction="row" spacing={1} alignItems="center">
@@ -74,7 +86,7 @@ export default function Navbar() {
               <Button
                 variant="outlined"
                 onClick={handleLogout}
-                sx={{ color: palette.brass, borderColor: 'rgba(184,134,63,0.5)', '&:hover': { borderColor: palette.brass, bgcolor: 'rgba(184,134,63,0.08)' } }}
+                sx={{ color: palette.teal, borderColor: 'rgba(13,156,144,0.5)', '&:hover': { borderColor: palette.teal, bgcolor: 'rgba(13,156,144,0.08)' } }}
               >
                 Log out
               </Button>

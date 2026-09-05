@@ -2,11 +2,11 @@
 // components (like the home page) can import these hex values directly
 // without pulling the whole MUI theme across the server/client boundary.
 export const palette = {
-  ink: '#161A20',
-  paper: '#F7F5F1',
-  brass: '#B8863F',
-  brassDark: '#8E6529',
-  moss: '#3E5C4A',
-  rust: '#A8442E',
-  slate950: '#0D1117',
+  ink: '#14161F',
+  paper: '#F5F6FB',
+  indigo: '#4F46E5',
+  indigoDark: '#3E37B8',
+  teal: '#0D9C90',
+  coral: '#F1633C',
+  slate950: '#0B0C14',
 };

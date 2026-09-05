@@ -54,7 +54,13 @@ export default function EditSubmissionModal({ submission, onClose, onSaved }) {
   }
 
   return (
-    <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{ sx: { borderRadius: 3, boxShadow: '0 32px 64px -24px rgba(20,22,31,0.35)' } }}
+    >
       <DialogTitle sx={{ fontWeight: 700 }}>Edit submission</DialogTitle>
       <DialogContent>
         <Grid container spacing={2.5} component="form" id="edit-submission-form" onSubmit={handleSubmit} sx={{ mt: 0.5 }}>

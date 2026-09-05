@@ -102,7 +102,7 @@ export default function ApplicationPage() {
           elevation={0}
           component="form"
           onSubmit={handleSubmit}
-          sx={{ mt: 3, p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(22,26,32,0.08)' }}
+          sx={{ mt: 3, p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(20,22,31,0.08)', boxShadow: '0 24px 48px -28px rgba(20,22,31,0.2)' }}
         >
           <Grid container spacing={2.5}>
             <Grid item xs={12} sm={6}>

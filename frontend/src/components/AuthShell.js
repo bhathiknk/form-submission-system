@@ -18,6 +18,9 @@ export default function AuthShell({ active, title, subtitle, children }) {
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: isAdmin ? palette.slate950 : 'background.default',
+        backgroundImage: isAdmin
+          ? 'radial-gradient(circle at 15% 10%, rgba(79,70,229,0.16), transparent 45%)'
+          : 'radial-gradient(circle at 85% 0%, rgba(13,156,144,0.08), transparent 45%)',
         px: 2,
         py: 8,
       }}
@@ -29,7 +32,7 @@ export default function AuthShell({ active, title, subtitle, children }) {
           sx={{
             mb: 3,
             minHeight: 40,
-            bgcolor: isAdmin ? 'rgba(255,255,255,0.06)' : 'rgba(22,26,32,0.06)',
+            bgcolor: isAdmin ? 'rgba(255,255,255,0.06)' : 'rgba(20,22,31,0.05)',
             borderRadius: 999,
             p: 0.5,
             '& .MuiTabs-indicator': { display: 'none' },
@@ -45,7 +48,7 @@ export default function AuthShell({ active, title, subtitle, children }) {
               textTransform: 'none',
               fontWeight: 600,
               color: isAdmin ? 'rgba(255,255,255,0.6)' : 'text.secondary',
-              '&.Mui-selected': { bgcolor: '#fff', color: 'text.primary' },
+              '&.Mui-selected': { bgcolor: '#fff', color: 'text.primary', boxShadow: '0 2px 8px rgba(20,22,31,0.1)' },
             }}
           />
           <Tab
@@ -58,7 +61,7 @@ export default function AuthShell({ active, title, subtitle, children }) {
               textTransform: 'none',
               fontWeight: 600,
               color: isAdmin ? 'rgba(255,255,255,0.6)' : 'text.secondary',
-              '&.Mui-selected': { bgcolor: palette.brass, color: '#161A20' },
+              '&.Mui-selected': { bgcolor: palette.indigo, color: '#fff' },
             }}
           />
         </Tabs>
@@ -69,7 +72,8 @@ export default function AuthShell({ active, title, subtitle, children }) {
             p: { xs: 3, sm: 4 },
             bgcolor: isAdmin ? 'rgba(255,255,255,0.04)' : '#fff',
             border: '1px solid',
-            borderColor: isAdmin ? 'rgba(255,255,255,0.1)' : 'rgba(22,26,32,0.08)',
+            borderColor: isAdmin ? 'rgba(255,255,255,0.1)' : 'rgba(20,22,31,0.08)',
+            boxShadow: isAdmin ? 'none' : '0 24px 48px -28px rgba(20,22,31,0.25)',
           }}
         >
           <Typography variant="h5" sx={{ color: isAdmin ? '#fff' : 'text.primary' }}>

@@ -4,7 +4,9 @@ import { useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { Box, Container, Paper, Typography, TextField, Button } from '@mui/material';
+import { Box, Container, Paper, Typography, TextField, Button, IconButton, InputAdornment } from '@mui/material';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
 
@@ -17,6 +19,8 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -62,66 +66,94 @@ export default function RegisterPage() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Navbar />
-      <Box sx={{ minHeight: 'calc(100vh - 64px)', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2, py: 8 }}>
-        <Container maxWidth="xs">
-          <Paper elevation={0} sx={{ p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(22,26,32,0.08)' }}>
-            <Typography variant="h5">Create your account</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-              Register as a customer to submit your application.
-            </Typography>
-
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-              <TextField
-                label="Email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-                placeholder="you@example.com"
-                required
-                fullWidth
-              />
-              <TextField
-                label="Password"
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                error={Boolean(errors.password)}
-                helperText={errors.password || 'At least 4 characters'}
-                required
-                fullWidth
-              />
-              <TextField
-                label="Confirm password"
-                name="confirmPassword"
-                type="password"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                error={Boolean(errors.confirmPassword)}
-                helperText={errors.confirmPassword}
-                required
-                fullWidth
-              />
-
-              <Button type="submit" variant="contained" color="primary" size="large" disabled={submitting} fullWidth>
-                {submitting ? 'Creating account…' : 'Create account'}
-              </Button>
-            </Box>
-
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
-              Already have an account?{' '}
-              <Typography component={NextLink} href="/login" variant="body2" sx={{ display: 'inline', fontWeight: 600, color: 'primary.dark', textDecoration: 'none' }}>
-                Log in
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+        <Navbar />
+        <Box sx={{ minHeight: 'calc(100vh - 64px)', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2, py: 8 }}>
+          <Container maxWidth="xs">
+            <Paper elevation={0} sx={{ p: { xs: 3, sm: 4 }, border: '1px solid', borderColor: 'rgba(20,22,31,0.08)', boxShadow: '0 24px 48px -28px rgba(20,22,31,0.25)' }}>
+              <Typography variant="h5">Create your account</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                Register as a customer to submit your application.
               </Typography>
-            </Typography>
-          </Paper>
-        </Container>
+
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                <TextField
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    error={Boolean(errors.email)}
+                    helperText={errors.email}
+                    placeholder="you@example.com"
+                    required
+                    fullWidth
+                />
+                <TextField
+                    label="Password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={handleChange}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password || 'At least 4 characters'}
+                    required
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                edge="end"
+                                size="small"
+                            >
+                              {showPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
+                            </IconButton>
+                          </InputAdornment>
+                      ),
+                    }}
+                />
+                <TextField
+                    label="Confirm password"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    error={Boolean(errors.confirmPassword)}
+                    helperText={errors.confirmPassword}
+                    required
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                edge="end"
+                                size="small"
+                            >
+                              {showConfirmPassword ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
+                            </IconButton>
+                          </InputAdornment>
+                      ),
+                    }}
+                />
+
+                <Button type="submit" variant="contained" color="primary" size="large" disabled={submitting} fullWidth>
+                  {submitting ? 'Creating account…' : 'Create account'}
+                </Button>
+              </Box>
+
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+                Already have an account?{' '}
+                <Typography component={NextLink} href="/login" variant="body2" sx={{ display: 'inline', fontWeight: 600, color: 'primary.dark', textDecoration: 'none' }}>
+                  Log in
+                </Typography>
+              </Typography>
+            </Paper>
+          </Container>
+        </Box>
       </Box>
-    </Box>
   );
 }

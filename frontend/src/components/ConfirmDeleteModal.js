@@ -5,7 +5,13 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
 // small confirm dialog before deleting a submission
 export default function ConfirmDeleteModal({ submission, onCancel, onConfirm, deleting }) {
   return (
-    <Dialog open onClose={onCancel} maxWidth="xs" fullWidth>
+    <Dialog
+      open
+      onClose={onCancel}
+      maxWidth="xs"
+      fullWidth
+      PaperProps={{ sx: { borderRadius: 3, boxShadow: '0 32px 64px -24px rgba(20,22,31,0.35)' } }}
+    >
       <DialogTitle sx={{ fontWeight: 700 }}>Delete submission?</DialogTitle>
       <DialogContent>
         <DialogContentText>

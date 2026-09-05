@@ -30,7 +30,13 @@ export default function CreateAdminModal({ onClose }) {
   }
 
   return (
-    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open
+      onClose={onClose}
+      maxWidth="xs"
+      fullWidth
+      PaperProps={{ sx: { borderRadius: 3, boxShadow: '0 32px 64px -24px rgba(20,22,31,0.35)' } }}
+    >
       <DialogTitle sx={{ fontWeight: 700 }}>Create admin account</DialogTitle>
 
       {!result ? (
@@ -58,7 +64,7 @@ export default function CreateAdminModal({ onClose }) {
             <Typography variant="body2" color="text.secondary">
               Share these credentials with the new admin. This password is shown only once.
             </Typography>
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(22,26,32,0.04)', borderRadius: 1.5 }}>
+            <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(79,70,229,0.06)', border: '1px solid rgba(79,70,229,0.12)', borderRadius: 2 }}>
               <Typography variant="body2">
                 <Box component="span" sx={{ color: 'text.secondary' }}>Email:</Box> {result.user.email}
               </Typography>
