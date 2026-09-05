@@ -39,6 +39,8 @@ Each folder also has its own `.env.example` — see setup steps below.
 - npm 9 or newer
 - PostgreSQL 14+ running locally, or a hosted Postgres URL (Neon, Supabase, Railway, etc. all work)
 - git
+- Internet access — `next/font/google` fetches the Inter and Newsreader font files from Google
+  Fonts the first time you build or run the frontend; a fully offline network will fail the build.
 
 ---
 
@@ -121,7 +123,6 @@ Open a **new terminal** (keep the backend running) and:
 ```bash
 cd frontend
 npm install
-npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 ```
 
 ### 3.1 Configure environment variables
